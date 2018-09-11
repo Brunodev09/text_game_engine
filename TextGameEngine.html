@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+	<title>Text Adventure</title>
+</head>
+<body>
+
+<canvas id = "Game" width="800" height="600"></canvas>
+
+
+<script>
+	var stages = [];
+
+	//----Inventory System and Status----//
+	var hp;
+	var iq;
+	var gold = 10;
+	var yourCurrent = " your current";
+	var inventory = {
+		gold: gold+" gold coins.",
+	};
+	var status = {
+		health: yourCurrent + " health is " + hp,
+		int: yourCurrent + " IQ is " + iq,
+	};
+	//----End----//
+
+	//----Combat----//
+	var combat = {
+		onCombat: false,
+	};
+	//----End----//
+
+	//---Terminal----//
+	var posX = [];
+	var posY = [];
+	var textCount = 0;
+	var spacing = 30;
+	//----End----//
+
+
+	//---World Construction----//
+	var map = new Array(100);
+	var tick = 0;
+	//----End----//
+
+	//----Player Input global variables----//
+	var pressingE = false;
+	var pressingSpace = false;
+	var pressingC = false;
+	var pressingF = false;
+	var pressingI = false;
+	//---End----//
+
+	document.onkeydown = function(event) {
+		if (event.keyCode === 69) pressingE = true; //E
+		 if (event.keyCode === 32) pressingSpace = true; //SPACE
+		 if (event.keyCode === 67) pressingC = true; //C
+		 if (event.keyCode === 70) pressingF = true; //F
+		 if (event.keyCode === 73) pressingI = true; //I
+		}
+
+		document.onkeyup = function(event) {
+		if (event.keyCode === 69) pressingE = false; //E
+		 if (event.keyCode === 32) pressingSpace = false; //SPACE
+		 if (event.keyCode === 67) pressingC = false; //C
+		 if (event.keyCode === 70) pressingF = false; //F
+		 if (event.keyCode === 73) pressingI = false; //I 
+		}
+
+		function playerInput() {
+			if (pressingE) {
+				tick++;
+				map[tick];
+				terminal();
+				console.log(tick);
+			}
+			if (pressingI) {
+				text(inventory.gold, 'white');
+			}
+		}
+
+	window.onload = function() {
+		c = document.getElementById("Game");
+		cx = c.getContext("2d");
+		var fps = 150;
+
+		cls();
+		arrayFillPositions();
+		terminal();
+		setInterval(playerInput, fps);
+	}
+	function arrayFillPositions() {
+		for (var k = 0; k < 100; k++) {
+			map[k] = Math.floor(Math.random()*2);
+		}
+		for (var j = 0; j < 100; j++) {
+			posX.push(j);
+			posY.push(j);
+		}
+		posX[0] = spacing;
+		posY[0] = spacing;
+		for (var i = 0; i < 100; i++) {
+			if (i != 0) {
+				posX[i] = posX[i-1] + spacing;
+				posY[i] = posY[i-1] + spacing;
+			} else {
+				posX[i] = spacing;
+				posY[i] = spacing;				
+			}
+		}
+	}
+
+	function cls() {
+		cx.fillStyle = 'black';
+		cx.fillRect(0, 0, c.width, c.height);
+	}
+
+	function terminal() {
+		if (Math.random()*100 > 50) onCombat = true;
+		if (map[tick] == 0) text("You are in a forest", 'white');
+		if (map[tick] == 1) text("You are in a montain", 'white');
+		if (map[tick] == 2) text("You are in the snow", 'white');
+	}
+	function mapRendering() {
+
+	}
+
+	function text(data, c) {
+		textCount++;
+		cx.fillStyle = c;
+		cx.font = "15px Press Start 2P";
+		cx.fillText(data, posX[0], posY[textCount]);
+		if (textCount >= 20) {
+			cls();
+			textCount = 0;
+			textCount++;
+		}
+	}
+
+</script>
+</body>
+</html>
